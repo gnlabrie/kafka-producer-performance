@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: staging
+  config:
+    import:
+      - optional:file:./config/profiles/application-staging.yaml
+      - optional:file:./config/security/mtls.yaml
+      - optional:file:./config/scenarios/variable-1k-1m-5minutes.yaml
+
+kafka-producer-test:
+  run:
+    name: staging-mtls-variable-5m
+    description: Staging mTLS variable-payload five-minute workload

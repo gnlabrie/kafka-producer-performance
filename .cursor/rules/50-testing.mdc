@@ -1,0 +1,25 @@
+---
+description: Unit, integration, security, and architecture test requirements
+globs:
+  - "src/main/java/**/*.java"
+  - "src/test/java/**/*.java"
+  - "pom.xml"
+alwaysApply: false
+---
+
+# Testing rules
+
+- Add tests for every behavior change.
+- Use JUnit 5 and AssertJ.
+- Use Mockito only at external boundaries.
+- Prefer parameterized tests for configuration combinations.
+- Use Testcontainers for Kafka integration tests.
+- Do not mock KafkaProducer when an integration test is required.
+- Test success, failure, boundary, and shutdown behavior.
+- Tests must not depend on execution order.
+- Tests must not use real corporate infrastructure.
+- Use temporary directories for CSV and summary tests.
+- Maintain separate Maven profiles for SSL, mTLS, and GSSAPI tests when extra infrastructure is required.
+- Use ArchUnit to enforce package dependency direction.
+- Run `./mvnw clean verify` before completion.
+- Do not disable quality gates to obtain a passing build.

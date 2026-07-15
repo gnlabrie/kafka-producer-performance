@@ -1,0 +1,16 @@
+kafka-producer-test:
+  run:
+    topic: producer-test-variable
+    duration: 5m
+  topic:
+    create-if-absent: true
+    partitions: 3
+    replication-factor: 1
+  key:
+    mode: SEQUENCE
+  payload:
+    mode: VARIABLE
+    content-mode: RANDOM
+    minimum-length: 1KB
+    maximum-length: 500KB
+    seed: 20260715

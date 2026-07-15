@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: production
+  config:
+    import:
+      - optional:file:./config/profiles/application-production.yaml
+      - optional:file:./config/security/gssapi-keytab.yaml
+      - optional:file:./config/scenarios/latency-acks-all.yaml
+
+kafka-producer-test:
+  run:
+    name: production-gssapi-controlled-rate
+    description: Production GSSAPI controlled-rate latency workload
+    messages-per-second: 100

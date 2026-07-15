@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: staging
+
+kafka-producer-test:
+  connection:
+    bootstrap-servers:
+      - ${KAFKA_BOOTSTRAP_SERVERS:kafka.staging.example.com:9093}
+  statistics:
+    output-directory: output/staging
+  summary:
+    output-directory: output/staging

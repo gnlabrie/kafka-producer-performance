@@ -1,0 +1,23 @@
+---
+description: Per-message statistics, CSV output, latency, and summaries
+globs:
+  - "src/main/java/**/statistics/**/*.java"
+  - "src/test/java/**/*Statistics*.java"
+  - "docs/output-formats.md"
+alwaysApply: false
+---
+
+# Statistics rules
+
+- Use immutable per-message statistics records.
+- Send callback measurements to a bounded queue.
+- Write CSV from a dedicated writer thread.
+- Use Apache Commons CSV.
+- Write the CSV header exactly once.
+- Use UTC ISO-8601 timestamps.
+- Use `System.nanoTime()` for latency.
+- Do not silently discard queue entries.
+- On queue overflow, increment the dropped counter, mark the run incomplete, and stop by default.
+- Use HdrHistogram for latency percentiles.
+- Ensure attempted, accepted, acknowledged, failed, and outstanding counts reconcile.
+- Include output filenames and sanitized configuration in the final summary.

@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KafkaProducerTestProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.config</a> &gt; <span class="el_source">KafkaProducerTestProperties.java</span></div><h1>KafkaProducerTestProperties.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.config;
+
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.unit.DataSize;
+
+/** Typed configuration for the Kafka Producer Test Tool. */
+@ConfigurationProperties(prefix = &quot;kafka-producer-test&quot;)
+<span class="fc" id="L15">public class KafkaProducerTestProperties {</span>
+<span class="fc" id="L16">  private ExecutionMode mode = ExecutionMode.RUN;</span>
+<span class="fc" id="L17">  private Run run = new Run();</span>
+<span class="fc" id="L18">  private Topic topic = new Topic();</span>
+<span class="fc" id="L19">  private Connection connection = new Connection();</span>
+<span class="fc" id="L20">  private Security security = new Security();</span>
+<span class="fc" id="L21">  private Key key = new Key();</span>
+<span class="fc" id="L22">  private Payload payload = new Payload();</span>
+<span class="fc" id="L23">  private Headers headers = new Headers();</span>
+<span class="fc" id="L24">  private Producer producer = new Producer();</span>
+<span class="fc" id="L25">  private Statistics statistics = new Statistics();</span>
+<span class="fc" id="L26">  private Summary summary = new Summary();</span>
+
+  public ExecutionMode getMode() {
+<span class="fc" id="L29">    return mode;</span>
+  }
+
+  public void setMode(final ExecutionMode value) {
+<span class="fc" id="L33">    mode = value;</span>
+<span class="fc" id="L34">  }</span>
+
+  public Run getRun() {
+<span class="fc" id="L37">    return run;</span>
+  }
+
+  public void setRun(final Run value) {
+<span class="fc" id="L41">    run = value;</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * Returns topic provisioning settings used when creating a missing topic.
+   *
+   * @return topic create-if-absent configuration
+   */
+  public Topic getTopic() {
+<span class="fc" id="L50">    return topic;</span>
+  }
+
+  /**
+   * Sets topic provisioning settings.
+   *
+   * @param value topic configuration
+   */
+  public void setTopic(final Topic value) {
+<span class="fc" id="L59">    topic = value;</span>
+<span class="fc" id="L60">  }</span>
+
+  public Connection getConnection() {
+<span class="fc" id="L63">    return connection;</span>
+  }
+
+  public void setConnection(final Connection value) {
+<span class="fc" id="L67">    connection = value;</span>
+<span class="fc" id="L68">  }</span>
+
+  public Security getSecurity() {
+<span class="fc" id="L71">    return security;</span>
+  }
+
+  public void setSecurity(final Security value) {
+<span class="fc" id="L75">    security = value;</span>
+<span class="fc" id="L76">  }</span>
+
+  public Key getKey() {
+<span class="fc" id="L79">    return key;</span>
+  }
+
+  public void setKey(final Key value) {
+<span class="fc" id="L83">    key = value;</span>
+<span class="fc" id="L84">  }</span>
+
+  public Payload getPayload() {
+<span class="fc" id="L87">    return payload;</span>
+  }
+
+  public void setPayload(final Payload value) {
+<span class="fc" id="L91">    payload = value;</span>
+<span class="fc" id="L92">  }</span>
+
+  public Headers getHeaders() {
+<span class="fc" id="L95">    return headers;</span>
+  }
+
+  public void setHeaders(final Headers value) {
+<span class="fc" id="L99">    headers = value;</span>
+<span class="fc" id="L100">  }</span>
+
+  public Producer getProducer() {
+<span class="fc" id="L103">    return producer;</span>
+  }
+
+  public void setProducer(final Producer value) {
+<span class="fc" id="L107">    producer = value;</span>
+<span class="fc" id="L108">  }</span>
+
+  public Statistics getStatistics() {
+<span class="fc" id="L111">    return statistics;</span>
+  }
+
+  public void setStatistics(final Statistics value) {
+<span class="fc" id="L115">    statistics = value;</span>
+<span class="fc" id="L116">  }</span>
+
+  public Summary getSummary() {
+<span class="fc" id="L119">    return summary;</span>
+  }
+
+  public void setSummary(final Summary value) {
+<span class="fc" id="L123">    summary = value;</span>
+<span class="fc" id="L124">  }</span>
+
+  /**
+   * Topic provisioning settings applied when {@code create-if-absent} is enabled. The topic name
+   * remains {@code run.topic}.
+   */
+<span class="fc" id="L130">  public static class Topic {</span>
+    private boolean createIfAbsent;
+<span class="fc" id="L132">    private int partitions = 1;</span>
+<span class="fc" id="L133">    private short replicationFactor = 1;</span>
+<span class="fc" id="L134">    private Map&lt;String, String&gt; configs = new LinkedHashMap&lt;&gt;();</span>
+
+    /**
+     * Returns whether the tool should create the topic when it does not exist.
+     *
+     * @return true when AdminClient create is requested
+     */
+    public boolean isCreateIfAbsent() {
+<span class="fc" id="L142">      return createIfAbsent;</span>
+    }
+
+    /**
+     * Sets whether missing topics should be created before the run.
+     *
+     * @param value create-if-absent flag
+     */
+    public void setCreateIfAbsent(final boolean value) {
+<span class="fc" id="L151">      createIfAbsent = value;</span>
+<span class="fc" id="L152">    }</span>
+
+    /**
+     * Returns the partition count used when creating the topic.
+     *
+     * @return partition count
+     */
+    public int getPartitions() {
+<span class="fc" id="L160">      return partitions;</span>
+    }
+
+    /**
+     * Sets the partition count used when creating the topic.
+     *
+     * @param value partition count
+     */
+    public void setPartitions(final int value) {
+<span class="fc" id="L169">      partitions = value;</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * Returns the replication factor used when creating the topic.
+     *
+     * @return replication factor
+     */
+    public short getReplicationFactor() {
+<span class="fc" id="L178">      return replicationFactor;</span>
+    }
+
+    /**
+     * Sets the replication factor used when creating the topic.
+     *
+     * @param value replication factor
+     */
+    public void setReplicationFactor(final short value) {
+<span class="fc" id="L187">      replicationFactor = value;</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Returns optional Kafka topic configuration entries applied at create time.
+     *
+     * @return topic config map
+     */
+    public Map&lt;String, String&gt; getConfigs() {
+<span class="fc" id="L196">      return configs;</span>
+    }
+
+    /**
+     * Sets optional Kafka topic configuration entries applied at create time.
+     *
+     * @param value topic config map
+     */
+    public void setConfigs(final Map&lt;String, String&gt; value) {
+<span class="fc" id="L205">      configs = value;</span>
+<span class="fc" id="L206">    }</span>
+  }
+
+  /** Run lifecycle configuration. */
+<span class="fc" id="L210">  public static class Run {</span>
+<span class="fc" id="L211">    private String name = &quot;kafka-producer-test&quot;;</span>
+    private String description;
+    private UUID runId;
+    private String topic;
+    private Long messageCount;
+    private Duration duration;
+    private Double messagesPerSecond;
+<span class="fc" id="L218">    private Duration shutdownTimeout = Duration.ofSeconds(30);</span>
+<span class="fc" id="L219">    private boolean failFast = true;</span>
+<span class="fc" id="L220">    private int maximumErrors = 1;</span>
+
+    public String getName() {
+<span class="fc" id="L223">      return name;</span>
+    }
+
+    public void setName(final String value) {
+<span class="fc" id="L227">      name = value;</span>
+<span class="fc" id="L228">    }</span>
+
+    public String getDescription() {
+<span class="fc" id="L231">      return description;</span>
+    }
+
+    public void setDescription(final String value) {
+<span class="nc" id="L235">      description = value;</span>
+<span class="nc" id="L236">    }</span>
+
+    public UUID getRunId() {
+<span class="fc" id="L239">      return runId;</span>
+    }
+
+    public void setRunId(final UUID value) {
+<span class="nc" id="L243">      runId = value;</span>
+<span class="nc" id="L244">    }</span>
+
+    public String getTopic() {
+<span class="fc" id="L247">      return topic;</span>
+    }
+
+    public void setTopic(final String value) {
+<span class="fc" id="L251">      topic = value;</span>
+<span class="fc" id="L252">    }</span>
+
+    public Long getMessageCount() {
+<span class="fc" id="L255">      return messageCount;</span>
+    }
+
+    public void setMessageCount(final Long value) {
+<span class="fc" id="L259">      messageCount = value;</span>
+<span class="fc" id="L260">    }</span>
+
+    public Duration getDuration() {
+<span class="fc" id="L263">      return duration;</span>
+    }
+
+    public void setDuration(final Duration value) {
+<span class="fc" id="L267">      duration = value;</span>
+<span class="fc" id="L268">    }</span>
+
+    public Double getMessagesPerSecond() {
+<span class="fc" id="L271">      return messagesPerSecond;</span>
+    }
+
+    public void setMessagesPerSecond(final Double value) {
+<span class="nc" id="L275">      messagesPerSecond = value;</span>
+<span class="nc" id="L276">    }</span>
+
+    public Duration getShutdownTimeout() {
+<span class="fc" id="L279">      return shutdownTimeout;</span>
+    }
+
+    public void setShutdownTimeout(final Duration value) {
+<span class="fc" id="L283">      shutdownTimeout = value;</span>
+<span class="fc" id="L284">    }</span>
+
+    public boolean isFailFast() {
+<span class="nc" id="L287">      return failFast;</span>
+    }
+
+    public void setFailFast(final boolean value) {
+<span class="fc" id="L291">      failFast = value;</span>
+<span class="fc" id="L292">    }</span>
+
+    public int getMaximumErrors() {
+<span class="fc" id="L295">      return maximumErrors;</span>
+    }
+
+    public void setMaximumErrors(final int value) {
+<span class="fc" id="L299">      maximumErrors = value;</span>
+<span class="fc" id="L300">    }</span>
+  }
+
+  /** Kafka connectivity configuration. */
+<span class="fc" id="L304">  public static class Connection {</span>
+<span class="fc" id="L305">    private List&lt;String&gt; bootstrapServers = new ArrayList&lt;&gt;();</span>
+    private String clientId;
+
+    public List&lt;String&gt; getBootstrapServers() {
+<span class="fc" id="L309">      return bootstrapServers;</span>
+    }
+
+    public void setBootstrapServers(final List&lt;String&gt; value) {
+<span class="fc" id="L313">      bootstrapServers = value;</span>
+<span class="fc" id="L314">    }</span>
+
+    public String getClientId() {
+<span class="fc" id="L317">      return clientId;</span>
+    }
+
+    public void setClientId(final String value) {
+<span class="fc" id="L321">      clientId = value;</span>
+<span class="fc" id="L322">    }</span>
+  }
+
+  /** Kafka security configuration. */
+<span class="fc" id="L326">  public static class Security {</span>
+<span class="fc" id="L327">    private AuthenticationMode mode = AuthenticationMode.PLAINTEXT;</span>
+    private Path truststorePath;
+    private String truststorePassword;
+<span class="fc" id="L330">    private String truststoreType = &quot;PKCS12&quot;;</span>
+    private Path keystorePath;
+    private String keystorePassword;
+<span class="fc" id="L333">    private String keystoreType = &quot;PKCS12&quot;;</span>
+    private String keyPassword;
+<span class="fc" id="L335">    private String endpointIdentificationAlgorithm = &quot;https&quot;;</span>
+<span class="fc" id="L336">    private String gssapiServiceName = &quot;kafka&quot;;</span>
+    private String gssapiPrincipal;
+    private Path gssapiKeytab;
+    private boolean gssapiUseTicketCache;
+<span class="fc" id="L340">    private GssapiLoginMode gssapiLoginMode = GssapiLoginMode.TICKET_CACHE;</span>
+    private String jaasConfig;
+
+    public AuthenticationMode getMode() {
+<span class="fc" id="L344">      return mode;</span>
+    }
+
+    public void setMode(final AuthenticationMode value) {
+<span class="fc" id="L348">      mode = value;</span>
+<span class="fc" id="L349">    }</span>
+
+    public Path getTruststorePath() {
+<span class="fc" id="L352">      return truststorePath;</span>
+    }
+
+    public void setTruststorePath(final Path value) {
+<span class="fc" id="L356">      truststorePath = value;</span>
+<span class="fc" id="L357">    }</span>
+
+    public String getTruststorePassword() {
+<span class="fc" id="L360">      return truststorePassword;</span>
+    }
+
+    public void setTruststorePassword(final String value) {
+<span class="fc" id="L364">      truststorePassword = value;</span>
+<span class="fc" id="L365">    }</span>
+
+    public String getTruststoreType() {
+<span class="fc" id="L368">      return truststoreType;</span>
+    }
+
+    public void setTruststoreType(final String value) {
+<span class="nc" id="L372">      truststoreType = value;</span>
+<span class="nc" id="L373">    }</span>
+
+    public Path getKeystorePath() {
+<span class="fc" id="L376">      return keystorePath;</span>
+    }
+
+    public void setKeystorePath(final Path value) {
+<span class="fc" id="L380">      keystorePath = value;</span>
+<span class="fc" id="L381">    }</span>
+
+    public String getKeystorePassword() {
+<span class="fc" id="L384">      return keystorePassword;</span>
+    }
+
+    public void setKeystorePassword(final String value) {
+<span class="fc" id="L388">      keystorePassword = value;</span>
+<span class="fc" id="L389">    }</span>
+
+    public String getKeystoreType() {
+<span class="fc" id="L392">      return keystoreType;</span>
+    }
+
+    public void setKeystoreType(final String value) {
+<span class="nc" id="L396">      keystoreType = value;</span>
+<span class="nc" id="L397">    }</span>
+
+    public String getKeyPassword() {
+<span class="fc" id="L400">      return keyPassword;</span>
+    }
+
+    public void setKeyPassword(final String value) {
+<span class="fc" id="L404">      keyPassword = value;</span>
+<span class="fc" id="L405">    }</span>
+
+    public String getEndpointIdentificationAlgorithm() {
+<span class="fc" id="L408">      return endpointIdentificationAlgorithm;</span>
+    }
+
+    public void setEndpointIdentificationAlgorithm(final String value) {
+<span class="nc" id="L412">      endpointIdentificationAlgorithm = value;</span>
+<span class="nc" id="L413">    }</span>
+
+    public String getGssapiServiceName() {
+<span class="fc" id="L416">      return gssapiServiceName;</span>
+    }
+
+    public void setGssapiServiceName(final String value) {
+<span class="nc" id="L420">      gssapiServiceName = value;</span>
+<span class="nc" id="L421">    }</span>
+
+    public String getGssapiPrincipal() {
+<span class="fc" id="L424">      return gssapiPrincipal;</span>
+    }
+
+    public void setGssapiPrincipal(final String value) {
+<span class="fc" id="L428">      gssapiPrincipal = value;</span>
+<span class="fc" id="L429">    }</span>
+
+    public Path getGssapiKeytab() {
+<span class="fc" id="L432">      return gssapiKeytab;</span>
+    }
+
+    public void setGssapiKeytab(final Path value) {
+<span class="fc" id="L436">      gssapiKeytab = value;</span>
+<span class="fc" id="L437">    }</span>
+
+    public boolean isGssapiUseTicketCache() {
+<span class="nc" id="L440">      return gssapiUseTicketCache;</span>
+    }
+
+    public void setGssapiUseTicketCache(final boolean value) {
+<span class="nc" id="L444">      gssapiUseTicketCache = value;</span>
+<span class="nc" id="L445">    }</span>
+
+    public GssapiLoginMode getGssapiLoginMode() {
+<span class="fc" id="L448">      return gssapiLoginMode;</span>
+    }
+
+    public void setGssapiLoginMode(final GssapiLoginMode value) {
+<span class="fc" id="L452">      gssapiLoginMode = value;</span>
+<span class="fc" id="L453">    }</span>
+
+    public String getJaasConfig() {
+<span class="fc" id="L456">      return jaasConfig;</span>
+    }
+
+    public void setJaasConfig(final String value) {
+<span class="nc" id="L460">      jaasConfig = value;</span>
+<span class="nc" id="L461">    }</span>
+  }
+
+  /** Key generation configuration. */
+<span class="fc" id="L465">  public static class Key {</span>
+<span class="fc" id="L466">    private KeyMode mode = KeyMode.NONE;</span>
+    private String fixedValue;
+<span class="fc" id="L468">    private Integer length = 16;</span>
+
+    public KeyMode getMode() {
+<span class="fc" id="L471">      return mode;</span>
+    }
+
+    public void setMode(final KeyMode value) {
+<span class="fc" id="L475">      mode = value;</span>
+<span class="fc" id="L476">    }</span>
+
+    public String getFixedValue() {
+<span class="fc" id="L479">      return fixedValue;</span>
+    }
+
+    public void setFixedValue(final String value) {
+<span class="fc" id="L483">      fixedValue = value;</span>
+<span class="fc" id="L484">    }</span>
+
+    public Integer getLength() {
+<span class="fc" id="L487">      return length;</span>
+    }
+
+    public void setLength(final Integer value) {
+<span class="fc" id="L491">      length = value;</span>
+<span class="fc" id="L492">    }</span>
+  }
+
+  /** Payload generation configuration. */
+<span class="fc" id="L496">  public static class Payload {</span>
+<span class="fc" id="L497">    private PayloadMode mode = PayloadMode.FIXED;</span>
+<span class="fc" id="L498">    private ContentMode contentMode = ContentMode.RANDOM;</span>
+<span class="fc" id="L499">    private DataSize length = DataSize.ofBytes(1024);</span>
+    private DataSize minimumLength;
+    private DataSize maximumLength;
+    private String text;
+    private Long seed;
+
+    public PayloadMode getMode() {
+<span class="fc" id="L506">      return mode;</span>
+    }
+
+    public void setMode(final PayloadMode value) {
+<span class="fc" id="L510">      mode = value;</span>
+<span class="fc" id="L511">    }</span>
+
+    public ContentMode getContentMode() {
+<span class="fc" id="L514">      return contentMode;</span>
+    }
+
+    public void setContentMode(final ContentMode value) {
+<span class="fc" id="L518">      contentMode = value;</span>
+<span class="fc" id="L519">    }</span>
+
+    public DataSize getLength() {
+<span class="fc" id="L522">      return length;</span>
+    }
+
+    public void setLength(final DataSize value) {
+<span class="fc" id="L526">      length = value;</span>
+<span class="fc" id="L527">    }</span>
+
+    public DataSize getMinimumLength() {
+<span class="fc" id="L530">      return minimumLength;</span>
+    }
+
+    public void setMinimumLength(final DataSize value) {
+<span class="fc" id="L534">      minimumLength = value;</span>
+<span class="fc" id="L535">    }</span>
+
+    public DataSize getMaximumLength() {
+<span class="fc" id="L538">      return maximumLength;</span>
+    }
+
+    public void setMaximumLength(final DataSize value) {
+<span class="fc" id="L542">      maximumLength = value;</span>
+<span class="fc" id="L543">    }</span>
+
+    public String getText() {
+<span class="fc" id="L546">      return text;</span>
+    }
+
+    public void setText(final String value) {
+<span class="fc" id="L550">      text = value;</span>
+<span class="fc" id="L551">    }</span>
+
+    public Long getSeed() {
+<span class="fc" id="L554">      return seed;</span>
+    }
+
+    public void setSeed(final Long value) {
+<span class="fc" id="L558">      seed = value;</span>
+<span class="fc" id="L559">    }</span>
+  }
+
+  /** Record header configuration. */
+<span class="fc" id="L563">  public static class Headers {</span>
+<span class="fc" id="L564">    private boolean includeDefaultHeaders = true;</span>
+<span class="fc" id="L565">    private Map&lt;String, String&gt; custom = new LinkedHashMap&lt;&gt;();</span>
+
+    public boolean isIncludeDefaultHeaders() {
+<span class="fc" id="L568">      return includeDefaultHeaders;</span>
+    }
+
+    public void setIncludeDefaultHeaders(final boolean value) {
+<span class="fc" id="L572">      includeDefaultHeaders = value;</span>
+<span class="fc" id="L573">    }</span>
+
+    public Map&lt;String, String&gt; getCustom() {
+<span class="fc" id="L576">      return custom;</span>
+    }
+
+    public void setCustom(final Map&lt;String, String&gt; value) {
+<span class="fc" id="L580">      custom = value;</span>
+<span class="fc" id="L581">    }</span>
+  }
+
+  /** Typed Kafka producer configuration. */
+<span class="fc" id="L585">  public static class Producer {</span>
+<span class="fc" id="L586">    private String acks = &quot;all&quot;;</span>
+<span class="fc" id="L587">    private CompressionType compressionType = CompressionType.NONE;</span>
+<span class="fc" id="L588">    private Duration linger = Duration.ZERO;</span>
+<span class="fc" id="L589">    private DataSize batchSize = DataSize.ofBytes(16384);</span>
+<span class="fc" id="L590">    private DataSize bufferMemory = DataSize.ofBytes(33554432);</span>
+<span class="fc" id="L591">    private DataSize maxRequestSize = DataSize.ofBytes(1048576);</span>
+<span class="fc" id="L592">    private Integer retries = Integer.MAX_VALUE;</span>
+<span class="fc" id="L593">    private Duration requestTimeout = Duration.ofSeconds(30);</span>
+<span class="fc" id="L594">    private Duration deliveryTimeout = Duration.ofMinutes(2);</span>
+<span class="fc" id="L595">    private Duration maxBlock = Duration.ofSeconds(60);</span>
+<span class="fc" id="L596">    private Integer maxInFlightRequests = 5;</span>
+<span class="fc" id="L597">    private Boolean enableIdempotence = true;</span>
+    private String clientDnsLookup;
+    private Duration metadataMaxAge;
+    private DataSize sendBuffer;
+    private DataSize receiveBuffer;
+<span class="fc" id="L602">    private Map&lt;String, Object&gt; properties = new LinkedHashMap&lt;&gt;();</span>
+
+    public String getAcks() {
+<span class="fc" id="L605">      return acks;</span>
+    }
+
+    public void setAcks(final String value) {
+<span class="fc" id="L609">      acks = value;</span>
+<span class="fc" id="L610">    }</span>
+
+    public CompressionType getCompressionType() {
+<span class="fc" id="L613">      return compressionType;</span>
+    }
+
+    public void setCompressionType(final CompressionType value) {
+<span class="fc" id="L617">      compressionType = value;</span>
+<span class="fc" id="L618">    }</span>
+
+    public Duration getLinger() {
+<span class="fc" id="L621">      return linger;</span>
+    }
+
+    public void setLinger(final Duration value) {
+<span class="fc" id="L625">      linger = value;</span>
+<span class="fc" id="L626">    }</span>
+
+    public DataSize getBatchSize() {
+<span class="fc" id="L629">      return batchSize;</span>
+    }
+
+    public void setBatchSize(final DataSize value) {
+<span class="fc" id="L633">      batchSize = value;</span>
+<span class="fc" id="L634">    }</span>
+
+    public DataSize getBufferMemory() {
+<span class="fc" id="L637">      return bufferMemory;</span>
+    }
+
+    public void setBufferMemory(final DataSize value) {
+<span class="fc" id="L641">      bufferMemory = value;</span>
+<span class="fc" id="L642">    }</span>
+
+    public DataSize getMaxRequestSize() {
+<span class="fc" id="L645">      return maxRequestSize;</span>
+    }
+
+    public void setMaxRequestSize(final DataSize value) {
+<span class="fc" id="L649">      maxRequestSize = value;</span>
+<span class="fc" id="L650">    }</span>
+
+    public Integer getRetries() {
+<span class="fc" id="L653">      return retries;</span>
+    }
+
+    public void setRetries(final Integer value) {
+<span class="fc" id="L657">      retries = value;</span>
+<span class="fc" id="L658">    }</span>
+
+    public Duration getRequestTimeout() {
+<span class="fc" id="L661">      return requestTimeout;</span>
+    }
+
+    public void setRequestTimeout(final Duration value) {
+<span class="fc" id="L665">      requestTimeout = value;</span>
+<span class="fc" id="L666">    }</span>
+
+    public Duration getDeliveryTimeout() {
+<span class="fc" id="L669">      return deliveryTimeout;</span>
+    }
+
+    public void setDeliveryTimeout(final Duration value) {
+<span class="fc" id="L673">      deliveryTimeout = value;</span>
+<span class="fc" id="L674">    }</span>
+
+    public Duration getMaxBlock() {
+<span class="fc" id="L677">      return maxBlock;</span>
+    }
+
+    public void setMaxBlock(final Duration value) {
+<span class="fc" id="L681">      maxBlock = value;</span>
+<span class="fc" id="L682">    }</span>
+
+    public Integer getMaxInFlightRequests() {
+<span class="fc" id="L685">      return maxInFlightRequests;</span>
+    }
+
+    public void setMaxInFlightRequests(final Integer value) {
+<span class="fc" id="L689">      maxInFlightRequests = value;</span>
+<span class="fc" id="L690">    }</span>
+
+    public Boolean getEnableIdempotence() {
+<span class="fc" id="L693">      return enableIdempotence;</span>
+    }
+
+    public void setEnableIdempotence(final Boolean value) {
+<span class="fc" id="L697">      enableIdempotence = value;</span>
+<span class="fc" id="L698">    }</span>
+
+    public String getClientDnsLookup() {
+<span class="fc" id="L701">      return clientDnsLookup;</span>
+    }
+
+    public void setClientDnsLookup(final String value) {
+<span class="nc" id="L705">      clientDnsLookup = value;</span>
+<span class="nc" id="L706">    }</span>
+
+    public Duration getMetadataMaxAge() {
+<span class="fc" id="L709">      return metadataMaxAge;</span>
+    }
+
+    public void setMetadataMaxAge(final Duration value) {
+<span class="nc" id="L713">      metadataMaxAge = value;</span>
+<span class="nc" id="L714">    }</span>
+
+    public DataSize getSendBuffer() {
+<span class="fc" id="L717">      return sendBuffer;</span>
+    }
+
+    public void setSendBuffer(final DataSize value) {
+<span class="nc" id="L721">      sendBuffer = value;</span>
+<span class="nc" id="L722">    }</span>
+
+    public DataSize getReceiveBuffer() {
+<span class="fc" id="L725">      return receiveBuffer;</span>
+    }
+
+    public void setReceiveBuffer(final DataSize value) {
+<span class="nc" id="L729">      receiveBuffer = value;</span>
+<span class="nc" id="L730">    }</span>
+
+    public Map&lt;String, Object&gt; getProperties() {
+<span class="fc" id="L733">      return properties;</span>
+    }
+
+    public void setProperties(final Map&lt;String, Object&gt; value) {
+<span class="fc" id="L737">      properties = value;</span>
+<span class="fc" id="L738">    }</span>
+  }
+
+  /** Detailed statistics output configuration. */
+<span class="fc" id="L742">  public static class Statistics {</span>
+<span class="fc" id="L743">    private boolean enabled = true;</span>
+<span class="fc" id="L744">    private Path outputDirectory = Path.of(&quot;output&quot;);</span>
+<span class="fc" id="L745">    private String fileNamePrefix = &quot;statistics&quot;;</span>
+<span class="fc" id="L746">    private int queueCapacity = 10000;</span>
+<span class="fc" id="L747">    private Duration flushInterval = Duration.ofSeconds(1);</span>
+<span class="fc" id="L748">    private boolean stopOnQueueOverflow = true;</span>
+
+    public boolean isEnabled() {
+<span class="nc" id="L751">      return enabled;</span>
+    }
+
+    public void setEnabled(final boolean value) {
+<span class="fc" id="L755">      enabled = value;</span>
+<span class="fc" id="L756">    }</span>
+
+    public Path getOutputDirectory() {
+<span class="fc" id="L759">      return outputDirectory;</span>
+    }
+
+    public void setOutputDirectory(final Path value) {
+<span class="fc" id="L763">      outputDirectory = value;</span>
+<span class="fc" id="L764">    }</span>
+
+    public String getFileNamePrefix() {
+<span class="fc" id="L767">      return fileNamePrefix;</span>
+    }
+
+    public void setFileNamePrefix(final String value) {
+<span class="fc" id="L771">      fileNamePrefix = value;</span>
+<span class="fc" id="L772">    }</span>
+
+    public int getQueueCapacity() {
+<span class="fc" id="L775">      return queueCapacity;</span>
+    }
+
+    public void setQueueCapacity(final int value) {
+<span class="fc" id="L779">      queueCapacity = value;</span>
+<span class="fc" id="L780">    }</span>
+
+    public Duration getFlushInterval() {
+<span class="fc" id="L783">      return flushInterval;</span>
+    }
+
+    public void setFlushInterval(final Duration value) {
+<span class="fc" id="L787">      flushInterval = value;</span>
+<span class="fc" id="L788">    }</span>
+
+    public boolean isStopOnQueueOverflow() {
+<span class="nc" id="L791">      return stopOnQueueOverflow;</span>
+    }
+
+    public void setStopOnQueueOverflow(final boolean value) {
+<span class="fc" id="L795">      stopOnQueueOverflow = value;</span>
+<span class="fc" id="L796">    }</span>
+  }
+
+  /** Summary output configuration. */
+<span class="fc" id="L800">  public static class Summary {</span>
+<span class="fc" id="L801">    private boolean writeJson = true;</span>
+    private boolean writeYaml;
+<span class="fc" id="L803">    private Path outputDirectory = Path.of(&quot;output&quot;);</span>
+<span class="fc" id="L804">    private String fileNamePrefix = &quot;summary&quot;;</span>
+<span class="fc" id="L805">    private boolean printConsole = true;</span>
+
+    public boolean isWriteJson() {
+<span class="fc" id="L808">      return writeJson;</span>
+    }
+
+    public void setWriteJson(final boolean value) {
+<span class="fc" id="L812">      writeJson = value;</span>
+<span class="fc" id="L813">    }</span>
+
+    public boolean isWriteYaml() {
+<span class="fc" id="L816">      return writeYaml;</span>
+    }
+
+    public void setWriteYaml(final boolean value) {
+<span class="fc" id="L820">      writeYaml = value;</span>
+<span class="fc" id="L821">    }</span>
+
+    public Path getOutputDirectory() {
+<span class="fc" id="L824">      return outputDirectory;</span>
+    }
+
+    public void setOutputDirectory(final Path value) {
+<span class="fc" id="L828">      outputDirectory = value;</span>
+<span class="fc" id="L829">    }</span>
+
+    public String getFileNamePrefix() {
+<span class="fc" id="L832">      return fileNamePrefix;</span>
+    }
+
+    public void setFileNamePrefix(final String value) {
+<span class="fc" id="L836">      fileNamePrefix = value;</span>
+<span class="fc" id="L837">    }</span>
+
+    public boolean isPrintConsole() {
+<span class="fc" id="L840">      return printConsole;</span>
+    }
+
+    public void setPrintConsole(final boolean value) {
+<span class="fc" id="L844">      printConsole = value;</span>
+<span class="fc" id="L845">    }</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

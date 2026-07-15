@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CsvStatisticsWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.statistics</a> &gt; <span class="el_source">CsvStatisticsWriter.java</span></div><h1>CsvStatisticsWriter.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.statistics;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
+/** Writes message measurements to a CSV file on the statistics writer thread. */
+public final class CsvStatisticsWriter implements AutoCloseable {
+  private final CSVPrinter printer;
+
+  /** Creates the detailed CSV output and writes its single header row. */
+<span class="fc" id="L14">  public CsvStatisticsWriter(final Path file) throws IOException {</span>
+<span class="fc" id="L15">    Path parent = file.toAbsolutePath().getParent();</span>
+<span class="pc bpc" id="L16" title="1 of 2 branches missed.">    if (parent != null) {</span>
+<span class="fc" id="L17">      Files.createDirectories(parent);</span>
+    }
+<span class="fc" id="L19">    printer =</span>
+        new CSVPrinter(
+<span class="fc" id="L21">            Files.newBufferedWriter(file),</span>
+            CSVFormat.DEFAULT
+<span class="fc" id="L23">                .builder()</span>
+<span class="fc" id="L24">                .setHeader(</span>
+                    &quot;run_id&quot;,
+                    &quot;sequence_number&quot;,
+                    &quot;created_at&quot;,
+                    &quot;send_started_at&quot;,
+                    &quot;send_returned_at&quot;,
+                    &quot;acknowledgement_at&quot;,
+                    &quot;creation_to_send_us&quot;,
+                    &quot;send_call_us&quot;,
+                    &quot;acknowledgement_us&quot;,
+                    &quot;total_us&quot;,
+                    &quot;topic&quot;,
+                    &quot;partition&quot;,
+                    &quot;offset&quot;,
+                    &quot;key_size&quot;,
+                    &quot;payload_size&quot;,
+                    &quot;compression_type&quot;,
+                    &quot;success&quot;,
+                    &quot;error_class&quot;,
+                    &quot;error_message&quot;)
+<span class="fc" id="L44">                .build());</span>
+<span class="fc" id="L45">  }</span>
+
+  /** Appends one statistic row. */
+  public void write(final MessageStatistic value) throws IOException {
+<span class="fc" id="L49">    printer.printRecord(</span>
+<span class="fc" id="L50">        value.runId(),</span>
+<span class="fc" id="L51">        value.sequenceNumber(),</span>
+<span class="fc" id="L52">        value.createdAt(),</span>
+<span class="fc" id="L53">        value.sendStartedAt(),</span>
+<span class="fc" id="L54">        value.sendReturnedAt(),</span>
+<span class="fc" id="L55">        value.callbackAt(),</span>
+<span class="fc" id="L56">        value.creationToSendMicros(),</span>
+<span class="fc" id="L57">        value.sendCallMicros(),</span>
+<span class="fc" id="L58">        value.acknowledgementMicros(),</span>
+<span class="fc" id="L59">        value.totalMicros(),</span>
+<span class="fc" id="L60">        value.topic(),</span>
+<span class="fc" id="L61">        value.partition(),</span>
+<span class="fc" id="L62">        value.offset(),</span>
+<span class="fc" id="L63">        value.keySize(),</span>
+<span class="fc" id="L64">        value.payloadSize(),</span>
+<span class="fc" id="L65">        value.compressionType(),</span>
+<span class="fc" id="L66">        value.success(),</span>
+<span class="fc" id="L67">        value.errorClass(),</span>
+<span class="fc" id="L68">        value.sanitizedErrorMessage());</span>
+<span class="fc" id="L69">  }</span>
+
+  /** Flushes and closes the CSV stream. */
+  @Override
+  public void close() throws IOException {
+<span class="fc" id="L74">    printer.close();</span>
+<span class="fc" id="L75">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

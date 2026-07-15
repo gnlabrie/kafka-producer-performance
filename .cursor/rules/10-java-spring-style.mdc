@@ -1,0 +1,25 @@
+---
+description: Java and Spring Boot coding standards
+globs:
+  - "src/main/java/**/*.java"
+  - "src/test/java/**/*.java"
+  - "pom.xml"
+alwaysApply: false
+---
+
+# Java and Spring Boot rules
+
+- Use Java 21.
+- Use constructor injection.
+- Prefer immutable records or final classes.
+- Use typed `@ConfigurationProperties`.
+- Use `Duration`, `DataSize`, `Path`, and enums where practical.
+- Do not use field injection.
+- Do not introduce Lombok.
+- Do not create generic Helper, Manager, or Utils classes.
+- Do not catch `Exception` except at top-level application boundaries.
+- Do not suppress exceptions without affecting run status.
+- Keep methods focused and cohesive.
+- Add Javadoc for public APIs and configuration properties.
+- Keep the application non-web.
+- Use standard Spring Boot externalized configuration rather than custom YAML parsing.

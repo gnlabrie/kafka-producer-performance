@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProducerRunExecutor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.execution</a> &gt; <span class="el_source">ProducerRunExecutor.java</span></div><h1>ProducerRunExecutor.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.execution;
+
+import com.kafkaproducertest.config.KafkaProducerTestProperties;
+import com.kafkaproducertest.config.RunStatus;
+import com.kafkaproducertest.config.SensitiveValueMasker;
+import com.kafkaproducertest.kafka.NativeKafkaProducerFactory;
+import com.kafkaproducertest.kafka.ProducerConfigFactory;
+import com.kafkaproducertest.kafka.TopicProvisioner;
+import com.kafkaproducertest.payload.HeaderFactory;
+import com.kafkaproducertest.payload.KeyGenerator;
+import com.kafkaproducertest.payload.PayloadGenerator;
+import com.kafkaproducertest.statistics.LatencyHistogram;
+import com.kafkaproducertest.statistics.MessageStatistic;
+import com.kafkaproducertest.statistics.RunSummary;
+import com.kafkaproducertest.statistics.RunSummaryBuilder;
+import com.kafkaproducertest.statistics.StatisticsPipeline;
+import com.kafkaproducertest.statistics.SummaryWriter;
+import com.kafkaproducertest.util.OutputFilenameGenerator;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+/** Executes asynchronous count- or duration-limited Kafka producer workloads. */
+@Component
+public final class ProducerRunExecutor {
+  private final KafkaProducerTestProperties properties;
+  private final ProducerConfigFactory configFactory;
+  private final NativeKafkaProducerFactory producerFactory;
+  private final TopicProvisioner topicProvisioner;
+  private final PayloadGenerator payloadGenerator;
+  private final KeyGenerator keyGenerator;
+  private final HeaderFactory headerFactory;
+  private final SummaryWriter summaryWriter;
+  private final SensitiveValueMasker masker;
+  private final Environment environment;
+
+  /** Creates a workload executor. */
+  public ProducerRunExecutor(
+      final KafkaProducerTestProperties properties,
+      final ProducerConfigFactory configFactory,
+      final NativeKafkaProducerFactory producerFactory,
+      final TopicProvisioner topicProvisioner,
+      final PayloadGenerator payloadGenerator,
+      final KeyGenerator keyGenerator,
+      final HeaderFactory headerFactory,
+      final SummaryWriter summaryWriter,
+      final SensitiveValueMasker masker,
+<span class="fc" id="L58">      final Environment environment) {</span>
+<span class="fc" id="L59">    this.properties = properties;</span>
+<span class="fc" id="L60">    this.configFactory = configFactory;</span>
+<span class="fc" id="L61">    this.producerFactory = producerFactory;</span>
+<span class="fc" id="L62">    this.topicProvisioner = topicProvisioner;</span>
+<span class="fc" id="L63">    this.payloadGenerator = payloadGenerator;</span>
+<span class="fc" id="L64">    this.keyGenerator = keyGenerator;</span>
+<span class="fc" id="L65">    this.headerFactory = headerFactory;</span>
+<span class="fc" id="L66">    this.summaryWriter = summaryWriter;</span>
+<span class="fc" id="L67">    this.masker = masker;</span>
+<span class="fc" id="L68">    this.environment = environment;</span>
+<span class="fc" id="L69">  }</span>
+
+  /** Runs the configured workload and returns its summary and output locations. */
+  public RunResult execute() throws IOException {
+    UUID runId =
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        properties.getRun().getRunId() == null ? UUID.randomUUID() : properties.getRun().getRunId();</span>
+<span class="fc" id="L75">    Instant startedAt = Instant.now();</span>
+<span class="fc" id="L76">    long startedNanos = System.nanoTime();</span>
+<span class="fc" id="L77">    Path csvFile =</span>
+<span class="fc" id="L78">        outputFile(</span>
+<span class="fc" id="L79">            properties.getStatistics().getOutputDirectory(),</span>
+<span class="fc" id="L80">            properties.getStatistics().getFileNamePrefix(),</span>
+            startedAt,
+            runId,
+            &quot;csv&quot;);
+    Path jsonFile =
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        properties.getSummary().isWriteJson()</span>
+<span class="fc" id="L86">            ? outputFile(</span>
+<span class="fc" id="L87">                properties.getSummary().getOutputDirectory(),</span>
+<span class="fc" id="L88">                properties.getSummary().getFileNamePrefix(),</span>
+                startedAt,
+                runId,
+                &quot;json&quot;)
+<span class="fc" id="L92">            : null;</span>
+    Path yamlFile =
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        properties.getSummary().isWriteYaml()</span>
+<span class="nc" id="L95">            ? outputFile(</span>
+<span class="nc" id="L96">                properties.getSummary().getOutputDirectory(),</span>
+<span class="nc" id="L97">                properties.getSummary().getFileNamePrefix(),</span>
+                startedAt,
+                runId,
+                &quot;yaml&quot;)
+<span class="fc" id="L101">            : null;</span>
+<span class="fc" id="L102">    Counters counters = new Counters();</span>
+<span class="fc" id="L103">    AtomicBoolean stop = new AtomicBoolean();</span>
+<span class="pc" id="L104">    Thread hook = new Thread(() -&gt; stop.set(true), &quot;kpt-shutdown&quot;);</span>
+<span class="fc" id="L105">    Runtime.getRuntime().addShutdownHook(hook);</span>
+<span class="fc" id="L106">    LatencyHistogram histogram = new LatencyHistogram();</span>
+<span class="fc" id="L107">    Map&lt;String, Object&gt; producerConfig = configFactory.create(properties);</span>
+<span class="fc" id="L108">    topicProvisioner.ensureTopic(properties);</span>
+    RunStatus status;
+<span class="fc" id="L110">    try (KafkaProducer&lt;byte[], byte[]&gt; producer = producerFactory.create(producerConfig);</span>
+<span class="fc" id="L111">        StatisticsPipeline pipeline = new StatisticsPipeline(properties, csvFile, histogram)) {</span>
+<span class="fc" id="L112">      sendLoop(producer, pipeline, runId, startedNanos, counters, stop);</span>
+<span class="fc" id="L113">      producer.flush();</span>
+<span class="fc" id="L114">      awaitAcknowledgements(counters, stop);</span>
+<span class="fc" id="L115">      status = status(counters, pipeline, stop);</span>
+<span class="fc" id="L116">      RunSummary summary =</span>
+<span class="fc" id="L117">          buildSummary(</span>
+              runId,
+              status,
+              startedAt,
+              counters,
+              pipeline,
+              histogram,
+              producerConfig,
+              csvFile,
+              jsonFile,
+              yamlFile);
+<span class="fc" id="L128">      writeSummary(summary, jsonFile, yamlFile);</span>
+<span class="fc" id="L129">      return new RunResult(status, summary, jsonFile, yamlFile);</span>
+    } finally {
+<span class="fc" id="L131">      Runtime.getRuntime().removeShutdownHook(hook);</span>
+    }
+  }
+
+  private void sendLoop(
+      final KafkaProducer&lt;byte[], byte[]&gt; producer,
+      final StatisticsPipeline pipeline,
+      final UUID runId,
+      final long startedNanos,
+      final Counters counters,
+      final AtomicBoolean stop) {
+<span class="fc" id="L142">    long sequence = 0;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    while (continueRun(sequence, startedNanos, counters, pipeline, stop)) {</span>
+<span class="fc" id="L144">      sequence++;</span>
+<span class="fc" id="L145">      send(producer, pipeline, runId, sequence, counters);</span>
+<span class="fc" id="L146">      rateLimit(sequence, startedNanos, stop);</span>
+    }
+<span class="fc" id="L148">  }</span>
+
+  private boolean continueRun(
+      final long count,
+      final long startedNanos,
+      final Counters counters,
+      final StatisticsPipeline pipeline,
+      final AtomicBoolean stop) {
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">    if (stop.get()</span>
+<span class="pc bpc" id="L157" title="3 of 4 branches missed.">        || (pipeline.isIncomplete() &amp;&amp; properties.getStatistics().isStopOnQueueOverflow())) {</span>
+<span class="nc" id="L158">      return false;</span>
+    }
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">    if (counters.failed.get() &gt; properties.getRun().getMaximumErrors()) {</span>
+<span class="nc" id="L161">      return false;</span>
+    }
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (properties.getRun().getMessageCount() != null) {</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">      return count &lt; properties.getRun().getMessageCount();</span>
+    }
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    return System.nanoTime() - startedNanos &lt; properties.getRun().getDuration().toNanos();</span>
+  }
+
+  private void send(
+      final KafkaProducer&lt;byte[], byte[]&gt; producer,
+      final StatisticsPipeline pipeline,
+      final UUID runId,
+      final long sequence,
+      final Counters counters) {
+<span class="fc" id="L175">    Instant createdAt = Instant.now();</span>
+<span class="fc" id="L176">    long creationNanos = System.nanoTime();</span>
+<span class="fc" id="L177">    byte[] key = keyGenerator.generate(sequence);</span>
+<span class="fc" id="L178">    byte[] payload = payloadGenerator.generate();</span>
+<span class="fc" id="L179">    Instant sendStartedAt = Instant.now();</span>
+<span class="fc" id="L180">    long sendStartedNanos = System.nanoTime();</span>
+<span class="fc" id="L181">    ProducerRecord&lt;byte[], byte[]&gt; record =</span>
+        new ProducerRecord&lt;&gt;(
+<span class="fc" id="L183">            properties.getRun().getTopic(),</span>
+            null,
+            null,
+            key,
+            payload,
+<span class="fc" id="L188">            headerFactory.create(createdAt, sequence, runId, payload.length));</span>
+<span class="fc" id="L189">    counters.attempted.incrementAndGet();</span>
+<span class="fc" id="L190">    counters.payloadBytes.addAndGet(payload.length);</span>
+<span class="fc" id="L191">    counters.outstanding.incrementAndGet();</span>
+    try {
+<span class="fc" id="L193">      producer.send(</span>
+          record,
+          (metadata, error) -&gt;
+<span class="fc" id="L196">              callback(</span>
+                  pipeline,
+                  runId,
+                  sequence,
+                  createdAt,
+                  sendStartedAt,
+                  sendStartedNanos,
+                  creationNanos,
+                  key,
+                  payload,
+                  metadata,
+                  error,
+                  counters));
+<span class="fc" id="L209">      Instant sendReturnedAt = Instant.now();</span>
+<span class="fc" id="L210">      long sendReturnedNanos = System.nanoTime();</span>
+<span class="fc" id="L211">      counters.accepted.incrementAndGet();</span>
+<span class="fc" id="L212">      counters.sendReturnedAt.put(sequence, new SendReturn(sendReturnedAt, sendReturnedNanos));</span>
+<span class="nc" id="L213">    } catch (RuntimeException exception) {</span>
+<span class="nc" id="L214">      counters.outstanding.decrementAndGet();</span>
+<span class="nc" id="L215">      counters.failed.incrementAndGet();</span>
+<span class="nc" id="L216">      counters.errorsByClass.merge(exception.getClass().getName(), 1L, Long::sum);</span>
+<span class="fc" id="L217">    }</span>
+<span class="fc" id="L218">  }</span>
+
+  private void callback(
+      final StatisticsPipeline pipeline,
+      final UUID runId,
+      final long sequence,
+      final Instant createdAt,
+      final Instant sendStartedAt,
+      final long sendStartedNanos,
+      final long creationNanos,
+      final byte[] key,
+      final byte[] payload,
+      final RecordMetadata metadata,
+      final Exception error,
+      final Counters counters) {
+<span class="fc" id="L233">    long callbackNanos = System.nanoTime();</span>
+<span class="fc" id="L234">    Instant callbackAt = Instant.now();</span>
+<span class="fc" id="L235">    SendReturn returned = counters.sendReturnedAt.remove(sequence);</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">    Instant sendReturnedAt = returned == null ? sendStartedAt : returned.at();</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">    long sendReturnedNanos = returned == null ? sendStartedNanos : returned.nanos();</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">    if (error == null) {</span>
+<span class="fc" id="L239">      counters.acknowledged.incrementAndGet();</span>
+<span class="fc" id="L240">      counters.recordsByPartition.merge(metadata.partition(), 1L, Long::sum);</span>
+    } else {
+<span class="nc" id="L242">      counters.failed.incrementAndGet();</span>
+<span class="nc" id="L243">      counters.errorsByClass.merge(error.getClass().getName(), 1L, Long::sum);</span>
+    }
+<span class="fc" id="L245">    counters.outstanding.decrementAndGet();</span>
+<span class="fc" id="L246">    pipeline.submit(</span>
+        new MessageStatistic(
+<span class="fc" id="L248">            runId.toString(),</span>
+            sequence,
+            createdAt,
+            sendStartedAt,
+            sendReturnedAt,
+            callbackAt,
+<span class="fc" id="L254">            micros(sendStartedNanos - creationNanos),</span>
+<span class="fc" id="L255">            micros(sendReturnedNanos - sendStartedNanos),</span>
+<span class="fc" id="L256">            micros(callbackNanos - sendReturnedNanos),</span>
+<span class="fc" id="L257">            micros(callbackNanos - creationNanos),</span>
+<span class="fc" id="L258">            properties.getRun().getTopic(),</span>
+<span class="pc bpc" id="L259" title="1 of 2 branches missed.">            metadata == null ? null : metadata.partition(),</span>
+<span class="pc bpc" id="L260" title="1 of 2 branches missed.">            metadata == null ? null : metadata.offset(),</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">            key == null ? 0 : key.length,</span>
+            payload.length,
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">            properties.getProducer().getCompressionType().kafkaName(),</span>
+            error == null,
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">            error == null ? null : error.getClass().getName(),</span>
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">            error == null ? null : sanitize(error.getMessage())));</span>
+<span class="fc" id="L267">  }</span>
+
+  private void awaitAcknowledgements(final Counters counters, final AtomicBoolean stop) {
+<span class="fc" id="L270">    long deadline = System.nanoTime() + properties.getRun().getShutdownTimeout().toNanos();</span>
+<span class="pc bpc" id="L271" title="5 of 6 branches missed.">    while (counters.outstanding.get() &gt; 0 &amp;&amp; System.nanoTime() &lt; deadline &amp;&amp; !stop.get()) {</span>
+      try {
+<span class="nc" id="L273">        Thread.sleep(10);</span>
+<span class="nc" id="L274">      } catch (InterruptedException exception) {</span>
+<span class="nc" id="L275">        Thread.currentThread().interrupt();</span>
+<span class="nc" id="L276">        stop.set(true);</span>
+<span class="nc" id="L277">      }</span>
+    }
+<span class="fc" id="L279">  }</span>
+
+  private RunStatus status(
+      final Counters counters, final StatisticsPipeline pipeline, final AtomicBoolean stop) {
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">    if (stop.get()) {</span>
+<span class="nc" id="L284">      return RunStatus.INTERRUPTED;</span>
+    }
+<span class="pc bpc" id="L286" title="2 of 4 branches missed.">    if (pipeline.isIncomplete() || counters.outstanding.get() &gt; 0) {</span>
+<span class="nc" id="L287">      return RunStatus.INCOMPLETE;</span>
+    }
+<span class="pc bpc" id="L289" title="1 of 2 branches missed.">    return counters.failed.get() &gt; 0 ? RunStatus.FAILED : RunStatus.COMPLETED;</span>
+  }
+
+  private RunSummary buildSummary(
+      final UUID runId,
+      final RunStatus status,
+      final Instant startedAt,
+      final Counters counters,
+      final StatisticsPipeline pipeline,
+      final LatencyHistogram histogram,
+      final Map&lt;String, Object&gt; producerConfig,
+      final Path csvFile,
+      final Path jsonFile,
+      final Path yamlFile) {
+<span class="fc" id="L303">    return new RunSummaryBuilder()</span>
+<span class="fc" id="L304">        .build(</span>
+            properties,
+<span class="fc" id="L306">            runId.toString(),</span>
+            status,
+            startedAt,
+<span class="fc" id="L309">            Instant.now(),</span>
+<span class="fc" id="L310">            counters.attempted.get(),</span>
+<span class="fc" id="L311">            counters.accepted.get(),</span>
+<span class="fc" id="L312">            counters.acknowledged.get(),</span>
+<span class="fc" id="L313">            counters.failed.get(),</span>
+<span class="fc" id="L314">            counters.payloadBytes.get(),</span>
+            counters.errorsByClass,
+            counters.recordsByPartition,
+            pipeline,
+            histogram,
+<span class="fc" id="L319">            masker.mask(producerConfig),</span>
+<span class="fc" id="L320">            String.join(&quot;,&quot;, environment.getActiveProfiles()),</span>
+            csvFile,
+            jsonFile,
+            yamlFile);
+  }
+
+  private void writeSummary(final RunSummary summary, final Path jsonFile, final Path yamlFile)
+      throws IOException {
+<span class="fc bfc" id="L328" title="All 2 branches covered.">    if (jsonFile != null) {</span>
+<span class="fc" id="L329">      summaryWriter.writeJson(summary, jsonFile);</span>
+    }
+<span class="pc bpc" id="L331" title="1 of 2 branches missed.">    if (yamlFile != null) {</span>
+<span class="nc" id="L332">      summaryWriter.writeYaml(summary, yamlFile);</span>
+    }
+<span class="fc" id="L334">  }</span>
+
+  private Path outputFile(
+      final Path directory,
+      final String prefix,
+      final Instant startedAt,
+      final UUID runId,
+      final String extension) {
+<span class="fc" id="L342">    return directory.resolve(OutputFilenameGenerator.create(prefix, startedAt, runId, extension));</span>
+  }
+
+  private void rateLimit(final long count, final long startedNanos, final AtomicBoolean stop) {
+<span class="fc" id="L346">    Double rate = properties.getRun().getMessagesPerSecond();</span>
+<span class="pc bpc" id="L347" title="1 of 2 branches missed.">    if (rate == null) {</span>
+<span class="fc" id="L348">      return;</span>
+    }
+<span class="nc" id="L350">    long expectedNanos = (long) (count * 1_000_000_000D / rate);</span>
+<span class="nc" id="L351">    long remainingNanos = expectedNanos - (System.nanoTime() - startedNanos);</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">    if (remainingNanos &lt;= 0) {</span>
+<span class="nc" id="L353">      return;</span>
+    }
+    try {
+<span class="nc" id="L356">      Thread.sleep(remainingNanos / 1_000_000L, (int) (remainingNanos % 1_000_000L));</span>
+<span class="nc" id="L357">    } catch (InterruptedException exception) {</span>
+<span class="nc" id="L358">      Thread.currentThread().interrupt();</span>
+<span class="nc" id="L359">      stop.set(true);</span>
+<span class="nc" id="L360">    }</span>
+<span class="nc" id="L361">  }</span>
+
+  private String sanitize(final String message) {
+<span class="nc bnc" id="L364" title="All 2 branches missed.">    if (message == null) {</span>
+<span class="nc" id="L365">      return null;</span>
+    }
+<span class="nc" id="L367">    return message.replaceAll(&quot;(?i)(password|secret|jaas|keytab)\\s*=\\s*[^\\s,;]+&quot;, &quot;$1=***&quot;);</span>
+  }
+
+  private long micros(final long nanos) {
+<span class="fc" id="L371">    return nanos / 1_000;</span>
+  }
+
+<span class="fc" id="L374">  private record SendReturn(Instant at, long nanos) { }</span>
+
+<span class="fc" id="L376">  private static final class Counters {</span>
+<span class="fc" id="L377">    private final AtomicLong attempted = new AtomicLong();</span>
+<span class="fc" id="L378">    private final AtomicLong accepted = new AtomicLong();</span>
+<span class="fc" id="L379">    private final AtomicLong acknowledged = new AtomicLong();</span>
+<span class="fc" id="L380">    private final AtomicLong failed = new AtomicLong();</span>
+<span class="fc" id="L381">    private final AtomicLong outstanding = new AtomicLong();</span>
+<span class="fc" id="L382">    private final AtomicLong payloadBytes = new AtomicLong();</span>
+<span class="fc" id="L383">    private final Map&lt;String, Long&gt; errorsByClass = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L384">    private final Map&lt;Integer, Long&gt; recordsByPartition = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L385">    private final Map&lt;Long, SendReturn&gt; sendReturnedAt = new ConcurrentHashMap&lt;&gt;();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

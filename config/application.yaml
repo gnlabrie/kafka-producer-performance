@@ -1,0 +1,11 @@
+spring:
+  main:
+    web-application-type: none
+
+# External configuration baseline. Run files compose profile, security, and scenario
+# fragments with spring.config.import.
+kafka-producer-test:
+  statistics:
+    output-directory: output
+  summary:
+    output-directory: output

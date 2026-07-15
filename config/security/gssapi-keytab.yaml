@@ -1,0 +1,10 @@
+kafka-producer-test:
+  security:
+    mode: SASL_SSL_GSSAPI
+    gssapi-service-name: kafka
+    gssapi-login-mode: KEYTAB
+    gssapi-principal: ${GSSAPI_PRINCIPAL}
+    gssapi-keytab: ${GSSAPI_KEYTAB}
+    gssapi-use-ticket-cache: false
+    truststore-path: ${TRUSTSTORE_PATH}
+    truststore-password: ${TRUSTSTORE_PASSWORD}

@@ -1,0 +1,435 @@
+{
+  "groups": [
+    {
+      "name": "kafka-producer-test",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties"
+    },
+    {
+      "name": "kafka-producer-test.connection",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Connection",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Connection getConnection() "
+    },
+    {
+      "name": "kafka-producer-test.headers",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Headers",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Headers getHeaders() "
+    },
+    {
+      "name": "kafka-producer-test.key",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Key",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Key getKey() "
+    },
+    {
+      "name": "kafka-producer-test.payload",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Payload getPayload() "
+    },
+    {
+      "name": "kafka-producer-test.producer",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Producer getProducer() "
+    },
+    {
+      "name": "kafka-producer-test.run",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Run getRun() "
+    },
+    {
+      "name": "kafka-producer-test.security",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Security getSecurity() "
+    },
+    {
+      "name": "kafka-producer-test.statistics",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Statistics getStatistics() "
+    },
+    {
+      "name": "kafka-producer-test.summary",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Summary",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Summary getSummary() "
+    },
+    {
+      "name": "kafka-producer-test.topic",
+      "type": "com.kafkaproducertest.config.KafkaProducerTestProperties$Topic",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties",
+      "sourceMethod": "public com.kafkaproducertest.config.KafkaProducerTestProperties.Topic getTopic() "
+    }
+  ],
+  "properties": [
+    {
+      "name": "kafka-producer-test.connection.bootstrap-servers",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Connection"
+    },
+    {
+      "name": "kafka-producer-test.connection.client-id",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Connection"
+    },
+    {
+      "name": "kafka-producer-test.headers.custom",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Headers"
+    },
+    {
+      "name": "kafka-producer-test.headers.include-default-headers",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Headers"
+    },
+    {
+      "name": "kafka-producer-test.key.fixed-value",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Key"
+    },
+    {
+      "name": "kafka-producer-test.key.length",
+      "type": "java.lang.Integer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Key"
+    },
+    {
+      "name": "kafka-producer-test.key.mode",
+      "type": "com.kafkaproducertest.config.KeyMode",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Key"
+    },
+    {
+      "name": "kafka-producer-test.mode",
+      "type": "com.kafkaproducertest.config.ExecutionMode",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties"
+    },
+    {
+      "name": "kafka-producer-test.payload.content-mode",
+      "type": "com.kafkaproducertest.config.ContentMode",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.payload.length",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.payload.maximum-length",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.payload.minimum-length",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.payload.mode",
+      "type": "com.kafkaproducertest.config.PayloadMode",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.payload.seed",
+      "type": "java.lang.Long",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.payload.text",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Payload"
+    },
+    {
+      "name": "kafka-producer-test.producer.acks",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.batch-size",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.buffer-memory",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.client-dns-lookup",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.compression-type",
+      "type": "com.kafkaproducertest.config.CompressionType",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.delivery-timeout",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.enable-idempotence",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.linger",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.max-block",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.max-in-flight-requests",
+      "type": "java.lang.Integer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.max-request-size",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.metadata-max-age",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.properties",
+      "type": "java.util.Map<java.lang.String,java.lang.Object>",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.receive-buffer",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.request-timeout",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.retries",
+      "type": "java.lang.Integer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.producer.send-buffer",
+      "type": "org.springframework.util.unit.DataSize",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Producer"
+    },
+    {
+      "name": "kafka-producer-test.run.description",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.duration",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.fail-fast",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.maximum-errors",
+      "type": "java.lang.Integer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.message-count",
+      "type": "java.lang.Long",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.messages-per-second",
+      "type": "java.lang.Double",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.name",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.run-id",
+      "type": "java.util.UUID",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.shutdown-timeout",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.run.topic",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Run"
+    },
+    {
+      "name": "kafka-producer-test.security.endpoint-identification-algorithm",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.gssapi-keytab",
+      "type": "java.nio.file.Path",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.gssapi-login-mode",
+      "type": "com.kafkaproducertest.config.GssapiLoginMode",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.gssapi-principal",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.gssapi-service-name",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.gssapi-use-ticket-cache",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.jaas-config",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.key-password",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.keystore-password",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.keystore-path",
+      "type": "java.nio.file.Path",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.keystore-type",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.mode",
+      "type": "com.kafkaproducertest.config.AuthenticationMode",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.truststore-password",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.truststore-path",
+      "type": "java.nio.file.Path",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.security.truststore-type",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Security"
+    },
+    {
+      "name": "kafka-producer-test.statistics.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics"
+    },
+    {
+      "name": "kafka-producer-test.statistics.file-name-prefix",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics"
+    },
+    {
+      "name": "kafka-producer-test.statistics.flush-interval",
+      "type": "java.time.Duration",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics"
+    },
+    {
+      "name": "kafka-producer-test.statistics.output-directory",
+      "type": "java.nio.file.Path",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics"
+    },
+    {
+      "name": "kafka-producer-test.statistics.queue-capacity",
+      "type": "java.lang.Integer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics"
+    },
+    {
+      "name": "kafka-producer-test.statistics.stop-on-queue-overflow",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Statistics"
+    },
+    {
+      "name": "kafka-producer-test.summary.file-name-prefix",
+      "type": "java.lang.String",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Summary"
+    },
+    {
+      "name": "kafka-producer-test.summary.output-directory",
+      "type": "java.nio.file.Path",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Summary"
+    },
+    {
+      "name": "kafka-producer-test.summary.print-console",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Summary"
+    },
+    {
+      "name": "kafka-producer-test.summary.write-json",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Summary"
+    },
+    {
+      "name": "kafka-producer-test.summary.write-yaml",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Summary"
+    },
+    {
+      "name": "kafka-producer-test.topic.configs",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Topic"
+    },
+    {
+      "name": "kafka-producer-test.topic.create-if-absent",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Topic"
+    },
+    {
+      "name": "kafka-producer-test.topic.partitions",
+      "type": "java.lang.Integer",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Topic"
+    },
+    {
+      "name": "kafka-producer-test.topic.replication-factor",
+      "type": "java.lang.Short",
+      "sourceType": "com.kafkaproducertest.config.KafkaProducerTestProperties$Topic"
+    }
+  ],
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
+}

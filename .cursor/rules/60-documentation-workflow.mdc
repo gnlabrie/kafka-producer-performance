@@ -1,0 +1,33 @@
+---
+description: Documentation updates and change workflow
+globs:
+  - "README.md"
+  - "docs/**/*.md"
+  - "src/main/java/**/*.java"
+  - "src/test/java/**/*.java"
+alwaysApply: false
+---
+
+# Documentation and workflow rules
+
+Before changing code:
+
+1. inspect relevant code and tests;
+2. identify the smallest coherent change;
+3. document assumptions;
+4. add or update tests;
+5. implement;
+6. run targeted tests;
+7. run the full verification build;
+8. update documentation;
+9. summarize changed files and limitations.
+
+Update documentation in the same change as behavior.
+
+Use fictional hostnames and environment-variable placeholders in examples.
+
+Never commit real credentials, certificates, keytabs, principals, or internal hostnames.
+
+Do not rewrite unrelated code.
+
+Add an ADR for significant architectural changes.

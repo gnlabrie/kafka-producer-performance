@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+kafka-producer-test:
+  connection:
+    bootstrap-servers:
+      - ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  statistics:
+    output-directory: output/local
+  summary:
+    output-directory: output/local

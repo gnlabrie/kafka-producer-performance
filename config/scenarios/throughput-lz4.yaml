@@ -1,0 +1,14 @@
+kafka-producer-test:
+  run:
+    topic: producer-test-throughput
+    message-count: 100000
+  payload:
+    mode: FIXED
+    content-mode: RANDOM
+    length: 16KB
+  producer:
+    acks: 1
+    compression-type: LZ4
+    linger: 10ms
+    batch-size: 128KB
+    enable-idempotence: false

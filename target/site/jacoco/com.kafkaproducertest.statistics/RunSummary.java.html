@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RunSummary.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.statistics</a> &gt; <span class="el_source">RunSummary.java</span></div><h1>RunSummary.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.statistics;
+
+import com.kafkaproducertest.config.RunStatus;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Map;
+
+/** Immutable final workload summary suitable for JSON or YAML output. */
+<span class="fc" id="L9">public record RunSummary(</span>
+    String runId,
+    String runName,
+    String description,
+    RunStatus status,
+    Instant startedAt,
+    Instant endedAt,
+    Duration elapsed,
+    long attempted,
+    long accepted,
+    long acknowledged,
+    long failed,
+    long outstanding,
+    long payloadBytes,
+    double messagesPerSecond,
+    double payloadMibPerSecond,
+    long latencyMinimumMicros,
+    double latencyAverageMicros,
+    long latencyMaximumMicros,
+    long latencyP50Micros,
+    long latencyP75Micros,
+    long latencyP90Micros,
+    long latencyP95Micros,
+    long latencyP99Micros,
+    long latencyP999Micros,
+    Map&lt;String, Long&gt; errorsByClass,
+    Map&lt;Integer, Long&gt; recordsByPartition,
+    long statisticsRowsWritten,
+    long statisticsRowsDropped,
+    Map&lt;String, Object&gt; effectiveProducerConfiguration,
+    String activeProfiles,
+    String csvFile,
+    String jsonSummaryFile,
+    String yamlSummaryFile,
+    String applicationLogFile) { }
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

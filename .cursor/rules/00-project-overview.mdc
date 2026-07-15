@@ -1,0 +1,26 @@
+---
+description: Project scope, architecture, and configuration strategy
+alwaysApply: true
+---
+
+# Project overview
+
+This project is a Java 21 Spring Boot command-line Kafka producer test tool.
+
+Use YAML configuration files as the primary user interface.
+
+Spring profiles are for environment-level defaults. External run files are for test scenarios.
+
+Do not implement consumer or Kafka Streams functionality unless explicitly requested.
+
+Use package-by-feature organization:
+
+- cli
+- config
+- kafka
+- payload
+- execution
+- statistics
+- util
+
+Keep workload generation, Kafka sending, and statistics output separated so CSV I/O cannot distort producer callbacks.

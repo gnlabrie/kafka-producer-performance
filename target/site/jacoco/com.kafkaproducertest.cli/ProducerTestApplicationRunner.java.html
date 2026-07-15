@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProducerTestApplicationRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.cli</a> &gt; <span class="el_source">ProducerTestApplicationRunner.java</span></div><h1>ProducerTestApplicationRunner.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.cli;
+
+import com.kafkaproducertest.config.ConfigurationException;
+import com.kafkaproducertest.config.ConfigurationValidator;
+import com.kafkaproducertest.config.EffectiveConfigurationPrinter;
+import com.kafkaproducertest.config.ExecutionMode;
+import com.kafkaproducertest.config.KafkaProducerTestProperties;
+import com.kafkaproducertest.config.RunStatus;
+import com.kafkaproducertest.execution.ProducerRunExecutor;
+import com.kafkaproducertest.execution.RunResult;
+import com.kafkaproducertest.kafka.ProducerConfigFactory;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.ExitCodeGenerator;
+import org.springframework.stereotype.Component;
+
+/** Dispatches application modes and exposes deterministic process exit codes. */
+@Component
+public final class ProducerTestApplicationRunner implements ApplicationRunner, ExitCodeGenerator {
+  private final KafkaProducerTestProperties properties;
+  private final ConfigurationValidator validator;
+  private final EffectiveConfigurationPrinter printer;
+  private final ProducerConfigFactory producerConfigFactory;
+  private final ProducerRunExecutor executor;
+  private int exitCode;
+
+  /** Creates the CLI application runner. */
+  public ProducerTestApplicationRunner(
+      final KafkaProducerTestProperties properties,
+      final ConfigurationValidator validator,
+      final EffectiveConfigurationPrinter printer,
+      final ProducerConfigFactory producerConfigFactory,
+<span class="fc" id="L33">      final ProducerRunExecutor executor) {</span>
+<span class="fc" id="L34">    this.properties = properties;</span>
+<span class="fc" id="L35">    this.validator = validator;</span>
+<span class="fc" id="L36">    this.printer = printer;</span>
+<span class="fc" id="L37">    this.producerConfigFactory = producerConfigFactory;</span>
+<span class="fc" id="L38">    this.executor = executor;</span>
+<span class="fc" id="L39">  }</span>
+
+  /** Validates then dispatches the requested execution mode. */
+  @Override
+  public void run(final ApplicationArguments arguments) {
+    try {
+<span class="fc" id="L45">      validator.validate(properties);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">      if (properties.getMode() == ExecutionMode.VALIDATE) {</span>
+<span class="fc" id="L47">        System.out.println(&quot;Configuration validation succeeded.&quot;);</span>
+<span class="fc" id="L48">        return;</span>
+      }
+<span class="fc bfc" id="L50" title="All 2 branches covered.">      if (properties.getMode() == ExecutionMode.SHOW_EFFECTIVE_CONFIG) {</span>
+<span class="fc" id="L51">        System.out.println(printer.print(producerConfigFactory.create(properties)));</span>
+<span class="fc" id="L52">        return;</span>
+      }
+<span class="fc" id="L54">      RunResult result = executor.execute();</span>
+<span class="fc" id="L55">      System.out.println(&quot;Run status: &quot; + result.status());</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">      if (properties.getSummary().isPrintConsole()) {</span>
+<span class="nc" id="L57">        System.out.println(</span>
+            &quot;Attempted: &quot;
+<span class="nc" id="L59">                + result.summary().attempted()</span>
+                + &quot;, acknowledged: &quot;
+<span class="nc" id="L61">                + result.summary().acknowledged()</span>
+                + &quot;, failed: &quot;
+<span class="nc" id="L63">                + result.summary().failed()</span>
+                + &quot;, throughput: &quot;
+<span class="nc" id="L65">                + result.summary().messagesPerSecond()</span>
+                + &quot; msg/s&quot;);
+      }
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">      if (result.status() == RunStatus.COMPLETED) {</span>
+<span class="nc" id="L69">        exitCode = 0;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">      } else if (result.status() == RunStatus.INCOMPLETE) {</span>
+<span class="fc" id="L71">        exitCode = 3;</span>
+      } else {
+<span class="fc" id="L73">        exitCode = 2;</span>
+      }
+<span class="fc" id="L75">    } catch (ConfigurationException exception) {</span>
+<span class="fc" id="L76">      System.err.println(exception.getMessage());</span>
+<span class="fc" id="L77">      exitCode = 1;</span>
+<span class="nc" id="L78">    } catch (RuntimeException | java.io.IOException exception) {</span>
+<span class="nc" id="L79">      System.err.println(&quot;Kafka producer test failed: &quot; + exception.getMessage());</span>
+<span class="nc" id="L80">      exitCode = 2;</span>
+<span class="fc" id="L81">    }</span>
+<span class="fc" id="L82">  }</span>
+
+  /** Returns the process exit code for SpringApplication.exit. */
+  @Override
+  public int getExitCode() {
+<span class="fc" id="L87">    return exitCode;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

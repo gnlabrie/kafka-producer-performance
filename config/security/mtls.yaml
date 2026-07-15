@@ -1,0 +1,11 @@
+kafka-producer-test:
+  security:
+    mode: MTLS
+    truststore-path: ${TRUSTSTORE_PATH}
+    truststore-password: ${TRUSTSTORE_PASSWORD}
+    truststore-type: PKCS12
+    keystore-path: ${KEYSTORE_PATH}
+    keystore-password: ${KEYSTORE_PASSWORD}
+    keystore-type: PKCS12
+    key-password: ${KEY_PASSWORD}
+    endpoint-identification-algorithm: https

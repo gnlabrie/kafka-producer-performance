@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: production
+
+kafka-producer-test:
+  connection:
+    bootstrap-servers:
+      - ${KAFKA_BOOTSTRAP_SERVERS:kafka.production.example.com:9093}
+  statistics:
+    output-directory: output/production
+  summary:
+    output-directory: output/production

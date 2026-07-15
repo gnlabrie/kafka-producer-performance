@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SensitiveValueMasker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.config</a> &gt; <span class="el_source">SensitiveValueMasker.java</span></div><h1>SensitiveValueMasker.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.config;
+
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import org.springframework.stereotype.Component;
+
+/** Masks sensitive configuration values before presentation or persistence. */
+@Component
+<span class="fc" id="L10">public final class SensitiveValueMasker {</span>
+  /** Returns a copy with sensitive values replaced by asterisks. */
+  public Map&lt;String, Object&gt; mask(final Map&lt;String, ?&gt; values) {
+<span class="fc" id="L13">    Map&lt;String, Object&gt; masked = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L14" title="All 2 branches covered.">    values.forEach((key, value) -&gt; masked.put(key, isSensitive(key) ? &quot;***&quot; : value));</span>
+<span class="fc" id="L15">    return masked;</span>
+  }
+
+  /** Identifies property keys whose values must not be presented. */
+  public boolean isSensitive(final String key) {
+<span class="fc" id="L20">    String lower = key.toLowerCase(Locale.ROOT);</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">    return lower.contains(&quot;password&quot;)</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        || lower.contains(&quot;jaas&quot;)</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        || lower.contains(&quot;keytab&quot;)</span>
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        || lower.contains(&quot;private.key&quot;)</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        || lower.contains(&quot;secret&quot;);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

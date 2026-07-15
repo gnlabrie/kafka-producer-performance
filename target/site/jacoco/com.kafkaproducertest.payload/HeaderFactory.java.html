@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HeaderFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.payload</a> &gt; <span class="el_source">HeaderFactory.java</span></div><h1>HeaderFactory.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.payload;
+
+import com.kafkaproducertest.config.KafkaProducerTestProperties;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.UUID;
+import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.springframework.stereotype.Component;
+
+/** Creates standard and configured static Kafka headers. */
+@Component
+public final class HeaderFactory {
+  private final KafkaProducerTestProperties properties;
+
+  /** Creates a header factory. */
+<span class="fc" id="L16">  public HeaderFactory(final KafkaProducerTestProperties properties) {</span>
+<span class="fc" id="L17">    this.properties = properties;</span>
+<span class="fc" id="L18">  }</span>
+
+  /** Creates headers for a single record. */
+  public RecordHeaders create(
+      final Instant createdAt, final long sequence, final UUID runId, final int payloadLength) {
+<span class="fc" id="L23">    RecordHeaders headers = new RecordHeaders();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">    if (properties.getHeaders().isIncludeDefaultHeaders()) {</span>
+<span class="fc" id="L25">      add(headers, &quot;kpt-created-at&quot;, createdAt.toString());</span>
+<span class="fc" id="L26">      add(headers, &quot;kpt-created-at-epoch-ms&quot;, Long.toString(createdAt.toEpochMilli()));</span>
+<span class="fc" id="L27">      add(headers, &quot;kpt-sequence-number&quot;, Long.toString(sequence));</span>
+<span class="fc" id="L28">      add(headers, &quot;kpt-run-id&quot;, runId.toString());</span>
+<span class="fc" id="L29">      add(headers, &quot;kpt-payload-length&quot;, Integer.toString(payloadLength));</span>
+    }
+<span class="fc" id="L31">    properties.getHeaders().getCustom().forEach((key, value) -&gt; add(headers, key, value));</span>
+<span class="fc" id="L32">    return headers;</span>
+  }
+
+  private void add(final RecordHeaders headers, final String key, final String value) {
+<span class="fc" id="L36">    headers.add(key, value.getBytes(StandardCharsets.UTF_8));</span>
+<span class="fc" id="L37">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

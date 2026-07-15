@@ -1,0 +1,26 @@
+---
+description: YAML configuration, profiles, validation, and secret handling
+globs:
+  - "src/main/java/**/config/**/*.java"
+  - "src/main/resources/**/*.yaml"
+  - "src/main/resources/**/*.yml"
+  - "config/**/*.yaml"
+  - "config/**/*.yml"
+alwaysApply: false
+---
+
+# Configuration and security rules
+
+- Use `kafka-producer-test` as the root configuration prefix.
+- Use external YAML run files as the primary interface.
+- Use Spring profiles only for environment defaults.
+- Use Spring configuration imports where composition is useful.
+- Use environment variables for passwords, keytabs, principals, and environment-specific paths.
+- Do not provide defaults for passwords.
+- Validate configuration before Kafka connections or output-file creation.
+- Validation errors must include the full property path.
+- Centralize sensitive-key detection and masking.
+- Never expose passwords, JAAS content, keytabs, private keys, ticket-cache contents, or authentication secrets.
+- Prefer typed security fields over raw JAAS configuration.
+- Treat raw JAAS configuration as an advanced escape hatch.
+- Reject incompatible payload, run-limit, security, and producer settings.

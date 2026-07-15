@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfigurationValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kafka Producer Test Tool</a> &gt; <a href="index.source.html" class="el_package">com.kafkaproducertest.config</a> &gt; <span class="el_source">ConfigurationValidator.java</span></div><h1>ConfigurationValidator.java</h1><pre class="source lang-java linenums">package com.kafkaproducertest.config;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Component;
+
+/** Validates configuration without creating network or output resources. */
+@Component
+<span class="fc" id="L11">public final class ConfigurationValidator {</span>
+  /** Validates the supplied configuration or throws a configuration exception. */
+  public void validate(final KafkaProducerTestProperties properties) {
+<span class="fc" id="L14">    List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L15">    validateConnection(properties, errors);</span>
+<span class="fc" id="L16">    validateRun(properties, errors);</span>
+<span class="fc" id="L17">    validateTopic(properties, errors);</span>
+<span class="fc" id="L18">    validatePayload(properties, errors);</span>
+<span class="fc" id="L19">    validateSecurity(properties, errors);</span>
+<span class="fc" id="L20">    validateOutput(properties, errors);</span>
+<span class="fc" id="L21">    validateProducer(properties, errors);</span>
+<span class="fc" id="L22">    validateHeaders(properties, errors);</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">    if (!errors.isEmpty()) {</span>
+<span class="fc" id="L24">      throw new ConfigurationException(errors);</span>
+    }
+<span class="fc" id="L26">  }</span>
+
+  private void validateConnection(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">    if (p.getConnection().getBootstrapServers() == null</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        || p.getConnection().getBootstrapServers().isEmpty()) {</span>
+<span class="fc" id="L31">      e.add(&quot;kafka-producer-test.connection.bootstrap-servers: at least one server is required&quot;);</span>
+    }
+<span class="fc" id="L33">  }</span>
+
+  private void validateRun(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="fc" id="L36">    KafkaProducerTestProperties.Run run = p.getRun();</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">    if (blank(run.getTopic())) {</span>
+<span class="fc" id="L38">      e.add(&quot;kafka-producer-test.run.topic: a topic is required&quot;);</span>
+    }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">    if (p.getMode() == ExecutionMode.RUN</span>
+<span class="fc bfc" id="L41" title="All 6 branches covered.">        &amp;&amp; (run.getMessageCount() == null) == (run.getDuration() == null)) {</span>
+<span class="fc" id="L42">      e.add(&quot;kafka-producer-test.run: configure exactly one of message-count or duration&quot;);</span>
+    }
+<span class="pc bpc" id="L44" title="1 of 4 branches missed.">    if (run.getMessageCount() != null &amp;&amp; run.getMessageCount() &lt;= 0) {</span>
+<span class="nc" id="L45">      e.add(&quot;kafka-producer-test.run.message-count: must be positive&quot;);</span>
+    }
+<span class="fc bfc" id="L47" title="All 2 branches covered.">    if (run.getDuration() != null</span>
+<span class="pc bpc" id="L48" title="2 of 4 branches missed.">        &amp;&amp; (run.getDuration().isZero() || run.getDuration().isNegative())) {</span>
+<span class="nc" id="L49">      e.add(&quot;kafka-producer-test.run.duration: must be positive&quot;);</span>
+    }
+<span class="pc bpc" id="L51" title="3 of 4 branches missed.">    if (run.getMessagesPerSecond() != null &amp;&amp; run.getMessagesPerSecond() &lt;= 0) {</span>
+<span class="nc" id="L52">      e.add(&quot;kafka-producer-test.run.messages-per-second: must be positive&quot;);</span>
+    }
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">    if (run.getShutdownTimeout() == null</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        || run.getShutdownTimeout().isNegative()</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        || run.getShutdownTimeout().isZero()) {</span>
+<span class="nc" id="L57">      e.add(&quot;kafka-producer-test.run.shutdown-timeout: must be positive&quot;);</span>
+    }
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">    if (run.getMaximumErrors() &lt; 0) {</span>
+<span class="nc" id="L60">      e.add(&quot;kafka-producer-test.run.maximum-errors: cannot be negative&quot;);</span>
+    }
+<span class="fc" id="L62">  }</span>
+
+  private void validateTopic(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="fc" id="L65">    KafkaProducerTestProperties.Topic topic = p.getTopic();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (topic.getPartitions() &lt; 1) {</span>
+<span class="fc" id="L67">      e.add(&quot;kafka-producer-test.topic.partitions: must be at least 1&quot;);</span>
+    }
+<span class="fc bfc" id="L69" title="All 2 branches covered.">    if (topic.getReplicationFactor() &lt; 1) {</span>
+<span class="fc" id="L70">      e.add(&quot;kafka-producer-test.topic.replication-factor: must be at least 1&quot;);</span>
+    }
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">    if (topic.getConfigs() != null) {</span>
+<span class="fc" id="L73">      topic</span>
+<span class="fc" id="L74">          .getConfigs()</span>
+<span class="fc" id="L75">          .forEach(</span>
+              (key, value) -&gt; {
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">                if (blank(key)) {</span>
+<span class="nc" id="L78">                  e.add(&quot;kafka-producer-test.topic.configs: keys must be non-blank&quot;);</span>
+                }
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">                if (value == null) {</span>
+<span class="fc" id="L81">                  e.add(&quot;kafka-producer-test.topic.configs.&quot; + key + &quot;: value must be a string&quot;);</span>
+                }
+<span class="fc" id="L83">              });</span>
+    }
+<span class="fc" id="L85">  }</span>
+
+  private void validatePayload(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="fc" id="L88">    KafkaProducerTestProperties.Payload payload = p.getPayload();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (payload.getMode() == PayloadMode.FIXED</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        &amp;&amp; (payload.getLength() == null</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">            || payload.getLength().toBytes() &lt;= 0</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            || payload.getMinimumLength() != null</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">            || payload.getMaximumLength() != null)) {</span>
+<span class="fc" id="L94">      e.add(&quot;kafka-producer-test.payload: fixed mode requires only a positive length&quot;);</span>
+    }
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    if (payload.getMode() == PayloadMode.VARIABLE</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        &amp;&amp; (payload.getMinimumLength() == null</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">            || payload.getMaximumLength() == null</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">            || payload.getMinimumLength().toBytes() &lt;= 0</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">            || payload.getMinimumLength().toBytes() &gt; payload.getMaximumLength().toBytes())) {</span>
+<span class="fc" id="L101">      e.add(</span>
+          &quot;kafka-producer-test.payload: variable mode requires positive minimum-length not greater&quot;
+              + &quot; than maximum-length&quot;);
+    }
+<span class="pc bpc" id="L105" title="3 of 4 branches missed.">    if (payload.getContentMode() == ContentMode.TEXT &amp;&amp; blank(payload.getText())) {</span>
+<span class="nc" id="L106">      e.add(&quot;kafka-producer-test.payload.text: required for TEXT content mode&quot;);</span>
+    }
+<span class="pc bpc" id="L108" title="1 of 4 branches missed.">    if (p.getKey().getMode() == KeyMode.FIXED &amp;&amp; blank(p.getKey().getFixedValue())) {</span>
+<span class="fc" id="L109">      e.add(&quot;kafka-producer-test.key.fixed-value: required for FIXED key mode&quot;);</span>
+    }
+<span class="fc" id="L111">  }</span>
+
+  private void validateSecurity(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="fc" id="L114">    KafkaProducerTestProperties.Security s = p.getSecurity();</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (s.getMode() == AuthenticationMode.SSL</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        || s.getMode() == AuthenticationMode.MTLS</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        || s.getMode() == AuthenticationMode.SASL_SSL_GSSAPI) {</span>
+<span class="fc" id="L118">      requiredFile(s.getTruststorePath(), &quot;kafka-producer-test.security.truststore-path&quot;, e);</span>
+<span class="fc" id="L119">      requiredValue(</span>
+<span class="fc" id="L120">          s.getTruststorePassword(), &quot;kafka-producer-test.security.truststore-password&quot;, e);</span>
+    }
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    if (s.getMode() == AuthenticationMode.MTLS) {</span>
+<span class="fc" id="L123">      requiredFile(s.getKeystorePath(), &quot;kafka-producer-test.security.keystore-path&quot;, e);</span>
+<span class="fc" id="L124">      requiredValue(s.getKeystorePassword(), &quot;kafka-producer-test.security.keystore-password&quot;, e);</span>
+    }
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (s.getMode() == AuthenticationMode.SASL_PLAINTEXT_GSSAPI</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        || s.getMode() == AuthenticationMode.SASL_SSL_GSSAPI) {</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">      if (blank(s.getGssapiServiceName())) {</span>
+<span class="nc" id="L129">        e.add(&quot;kafka-producer-test.security.gssapi-service-name: required for GSSAPI&quot;);</span>
+      }
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">      if (s.getGssapiLoginMode() == GssapiLoginMode.KEYTAB) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (blank(s.getGssapiPrincipal())) {</span>
+<span class="nc" id="L133">          e.add(&quot;kafka-producer-test.security.gssapi-principal: required for keytab login&quot;);</span>
+        }
+<span class="nc" id="L135">        requiredFile(s.getGssapiKeytab(), &quot;kafka-producer-test.security.gssapi-keytab&quot;, e);</span>
+      }
+<span class="pc bpc" id="L137" title="2 of 4 branches missed.">      if (s.getGssapiLoginMode() == GssapiLoginMode.TICKET_CACHE &amp;&amp; s.getGssapiKeytab() != null) {</span>
+<span class="fc" id="L138">        e.add(</span>
+            &quot;kafka-producer-test.security.gssapi-keytab: cannot be configured with ticket-cache&quot;
+                + &quot; login&quot;);
+      }
+    }
+<span class="fc" id="L143">  }</span>
+
+  private void validateOutput(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">    if (p.getStatistics().getQueueCapacity() &lt;= 0) {</span>
+<span class="nc" id="L147">      e.add(&quot;kafka-producer-test.statistics.queue-capacity: must be positive&quot;);</span>
+    }
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    if (p.getStatistics().getFlushInterval() == null</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        || p.getStatistics().getFlushInterval().isNegative()</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        || p.getStatistics().getFlushInterval().isZero()) {</span>
+<span class="nc" id="L152">      e.add(&quot;kafka-producer-test.statistics.flush-interval: must be positive&quot;);</span>
+    }
+<span class="fc bfc" id="L154" title="All 2 branches covered.">    if (p.getMode() == ExecutionMode.RUN) {</span>
+<span class="fc" id="L155">      writable(</span>
+<span class="fc" id="L156">          p.getStatistics().getOutputDirectory(),</span>
+          &quot;kafka-producer-test.statistics.output-directory&quot;,
+          e);
+<span class="fc" id="L159">      writable(</span>
+<span class="fc" id="L160">          p.getSummary().getOutputDirectory(), &quot;kafka-producer-test.summary.output-directory&quot;, e);</span>
+    }
+<span class="fc" id="L162">  }</span>
+
+  private void validateProducer(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="fc" id="L165">    KafkaProducerTestProperties.Producer producer = p.getProducer();</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">    if (producer.getEnableIdempotence()</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        &amp;&amp; (!&quot;all&quot;.equalsIgnoreCase(producer.getAcks())</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">            || producer.getRetries() == null</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">            || producer.getRetries() &lt;= 0</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">            || producer.getMaxInFlightRequests() == null</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">            || producer.getMaxInFlightRequests() &gt; 5)) {</span>
+<span class="fc" id="L172">      e.add(</span>
+          &quot;kafka-producer-test.producer: idempotence requires acks=all, retries&gt;0, and&quot;
+              + &quot; max-in-flight-requests&lt;=5&quot;);
+    }
+<span class="fc" id="L176">  }</span>
+
+  private void validateHeaders(final KafkaProducerTestProperties p, final List&lt;String&gt; e) {
+<span class="fc" id="L179">    p.getHeaders().getCustom().keySet().stream()</span>
+<span class="fc" id="L180">        .filter(key -&gt; key.toLowerCase().startsWith(&quot;kpt-&quot;))</span>
+<span class="fc" id="L181">        .forEach(</span>
+            key -&gt;
+<span class="fc" id="L183">                e.add(</span>
+                    &quot;kafka-producer-test.headers.custom.&quot; + key + &quot;: kpt-* headers are reserved&quot;));
+<span class="fc" id="L185">  }</span>
+
+  private void requiredFile(final Path file, final String path, final List&lt;String&gt; errors) {
+<span class="pc bpc" id="L188" title="1 of 4 branches missed.">    if (file == null || !Files.isReadable(file)) {</span>
+<span class="fc" id="L189">      errors.add(path + &quot;: readable file is required&quot;);</span>
+    }
+<span class="fc" id="L191">  }</span>
+
+  private void requiredValue(final String value, final String path, final List&lt;String&gt; errors) {
+<span class="fc bfc" id="L194" title="All 2 branches covered.">    if (blank(value)) {</span>
+<span class="fc" id="L195">      errors.add(path + &quot;: a value is required&quot;);</span>
+    }
+<span class="fc" id="L197">  }</span>
+
+  private void writable(final Path directory, final String path, final List&lt;String&gt; errors) {
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">    if (directory == null) {</span>
+<span class="nc" id="L201">      errors.add(path + &quot;: directory is required&quot;);</span>
+<span class="pc bpc" id="L202" title="2 of 4 branches missed.">    } else if (Files.exists(directory) &amp;&amp; !Files.isWritable(directory)) {</span>
+<span class="nc" id="L203">      errors.add(path + &quot;: directory is not writable&quot;);</span>
+<span class="pc bpc" id="L204" title="3 of 4 branches missed.">    } else if (!Files.exists(directory) &amp;&amp; firstExistingParent(directory) == null) {</span>
+<span class="nc" id="L205">      errors.add(path + &quot;: directory cannot be created because no parent directory exists&quot;);</span>
+    }
+<span class="fc" id="L207">  }</span>
+
+  private Path firstExistingParent(final Path directory) {
+<span class="nc" id="L210">    Path candidate = directory.toAbsolutePath();</span>
+<span class="nc bnc" id="L211" title="All 4 branches missed.">    while (candidate != null &amp;&amp; !Files.exists(candidate)) {</span>
+<span class="nc" id="L212">      candidate = candidate.getParent();</span>
+    }
+<span class="nc" id="L214">    return candidate;</span>
+  }
+
+  private boolean blank(final String value) {
+<span class="pc bpc" id="L218" title="1 of 4 branches missed.">    return value == null || value.isBlank();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

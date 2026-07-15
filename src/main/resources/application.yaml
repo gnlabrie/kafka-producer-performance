@@ -1,0 +1,56 @@
+spring:
+  main:
+    web-application-type: none
+
+kafka-producer-test:
+  mode: RUN
+  run:
+    name: kafka-producer-test
+    topic: ""
+    shutdown-timeout: 30s
+    fail-fast: true
+    maximum-errors: 1
+  topic:
+    create-if-absent: false
+    partitions: 1
+    replication-factor: 1
+    configs: {}
+  connection:
+    bootstrap-servers: []
+  security:
+    mode: PLAINTEXT
+  key:
+    mode: NONE
+    length: 16
+  payload:
+    mode: FIXED
+    content-mode: RANDOM
+    length: 1KB
+  headers:
+    include-default-headers: true
+  producer:
+    acks: all
+    compression-type: NONE
+    linger: 0ms
+    batch-size: 16KB
+    buffer-memory: 32MB
+    max-request-size: 1MB
+    retries: 2147483647
+    request-timeout: 30s
+    delivery-timeout: 2m
+    max-block: 60s
+    max-in-flight-requests: 5
+    enable-idempotence: true
+  statistics:
+    enabled: true
+    output-directory: output
+    file-name-prefix: statistics
+    queue-capacity: 10000
+    flush-interval: 1s
+    stop-on-queue-overflow: true
+  summary:
+    write-json: true
+    write-yaml: false
+    output-directory: output
+    file-name-prefix: summary
+    print-console: true

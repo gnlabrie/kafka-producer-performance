@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: local
+  config:
+    import:
+      - optional:file:./config/profiles/application-local.yaml
+      - optional:file:./config/security/plaintext.yaml
+      - optional:file:./config/scenarios/fixed-1k-10000-messages.yaml
+
+kafka-producer-test:
+  run:
+    name: local-plaintext
+    description: Local PLAINTEXT fixed-payload smoke workload

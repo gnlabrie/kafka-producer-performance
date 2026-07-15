@@ -1,0 +1,15 @@
+kafka-producer-test:
+  run:
+    topic: binding-topic
+    duration: 5s
+  topic:
+    create-if-absent: true
+    partitions: 3
+    replication-factor: 1
+    configs:
+      retention.ms: "86400000"
+  connection:
+    bootstrap-servers:
+      - broker.test:9092
+  payload:
+    length: 2KB

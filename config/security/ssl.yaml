@@ -1,0 +1,7 @@
+kafka-producer-test:
+  security:
+    mode: SSL
+    truststore-path: ${TRUSTSTORE_PATH}
+    truststore-password: ${TRUSTSTORE_PASSWORD}
+    truststore-type: PKCS12
+    endpoint-identification-algorithm: https

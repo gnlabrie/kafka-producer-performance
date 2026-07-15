@@ -1,0 +1,25 @@
+---
+description: Kafka producer implementation requirements
+globs:
+  - "src/main/java/**/kafka/**/*.java"
+  - "src/main/java/**/execution/**/*.java"
+  - "src/test/java/**/*Kafka*.java"
+alwaysApply: false
+---
+
+# Kafka producer rules
+
+- Use `KafkaProducer<byte[], byte[]>`.
+- Use asynchronous `send()`.
+- Never wait on each send future.
+- Capture send start before calling `send()`.
+- Capture acknowledgement time inside the callback.
+- Use `System.nanoTime()` for elapsed measurements.
+- Keep callbacks non-blocking.
+- Never write CSV directly from a Kafka callback.
+- Preserve standard Kafka producer property names.
+- Validate producer property combinations before creating the producer.
+- Flush and close during controlled shutdown.
+- Account for every attempted record as accepted, acknowledged, failed, outstanding, or rejected before send.
+- Report sanitized effective producer configuration.
+- Do not run topic administration commands unless explicitly requested.
