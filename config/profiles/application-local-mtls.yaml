@@ -1,0 +1,7 @@
+# Local kafka-dev mTLS listener overlay.
+# Import after application-local.yaml so this bootstrap default wins
+# (spring.config.import fragments outrank the run file's own properties).
+kafka-producer-test:
+  connection:
+    bootstrap-servers:
+      - ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}

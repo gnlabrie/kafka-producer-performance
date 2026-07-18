@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: local
+  config:
+    import:
+      - optional:file:./config/profiles/application-local.yaml
+      - optional:file:./config/security/mtls.yaml
+      - optional:file:./config/scenarios/variable-1k-1m-5minutes-acks-1.yaml
+      # Last import wins over application-local's localhost:9092 default.
+      - optional:file:./config/profiles/application-local-mtls.yaml
+
+kafka-producer-test:
+  run:
+    name: local-mtls-variable-1k-1m-5m-acks1
+    description: Local mTLS variable-payload five-minute workload (acks=1)
