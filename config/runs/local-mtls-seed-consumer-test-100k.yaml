@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: local
+  config:
+    import:
+      - optional:file:./config/profiles/application-local.yaml
+      - optional:file:./config/security/mtls.yaml
+      - optional:file:./config/scenarios/seed-consumer-test-100k.yaml
+      # Last import wins over application-local's localhost:9092 default.
+      - optional:file:./config/profiles/application-local-mtls.yaml
+
+kafka-producer-test:
+  run:
+    name: local-mtls-seed-consumer-test-100k
+    description: Local mTLS seed of consumer-test-100k with 100,000 fixed 1KB messages

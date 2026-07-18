@@ -12,6 +12,18 @@ Set `KAFKA_BOOTSTRAP_SERVERS` to override the local profile endpoint.
 
 Scenario files may set `topic.create-if-absent` with `partitions` and `replication-factor` so the tool creates a missing topic with those settings before producing. Existing topics are left unchanged.
 
+## Local mTLS consumer-test seeding
+
+Seed `consumer-test-10k`, `consumer-test-100k`, or `consumer-test-250k` over the local mTLS listener (default `localhost:9094`). Each scenario creates its topic if it is missing (3 partitions, RF=1).
+
+```bash
+./bin/kafka-producer-test.sh config/runs/local-mtls-seed-consumer-test-10k.yaml
+./bin/kafka-producer-test.sh config/runs/local-mtls-seed-consumer-test-100k.yaml
+./bin/kafka-producer-test.sh config/runs/local-mtls-seed-consumer-test-250k.yaml
+```
+
+Uses kafka-dev client material under `./certs/kafka-dev/` by default. Override `KAFKA_BOOTSTRAP_SERVERS` or truststore/keystore paths when needed.
+
 ## Staging mTLS variable payloads
 
 ```bash

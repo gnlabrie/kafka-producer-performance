@@ -1,0 +1,16 @@
+# Seed the consumer-test-100k topic with 100,000 fixed-length records.
+kafka-producer-test:
+  run:
+    topic: consumer-test-100k
+    message-count: 100000
+  topic:
+    create-if-absent: true
+    partitions: 3
+    replication-factor: 1
+  key:
+    mode: SEQUENCE
+  payload:
+    mode: FIXED
+    content-mode: RANDOM
+    length: 1KB
+    seed: 20260718
